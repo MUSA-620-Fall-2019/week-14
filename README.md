@@ -30,6 +30,11 @@ We'll walk through two examples of [Panel](https://panel.pyviz.org) dashboards t
 1. [Visualizing recent shootings in Philadelphia using Altair, Folium, and Holoviews](https://github.com/MUSA-620-Fall-2019/philadelphia-shootings-app)
 1. [Visualizing NYC taxi trips with Datashader and Altair](https://github.com/MUSA-620-Fall-2019/datashader-nyc-taxi-app)
 
+## Summary of Web-based Options
+
+- [Web visualization options](./WebVisualizationOptions.md)
+- [Deployment options](./DeploymentOptions.md)
+
 ## References
 
 - Panel
