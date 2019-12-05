@@ -45,6 +45,9 @@ def get_data(days):
     # Remove entries where fatal is NaN
     gdf = gdf.dropna(subset=["fatal"])
 
+    # Remove missing geometries
+    gdf = gdf.loc[gdf.geometry.notnull()]
+
     return gdf
 
 
