@@ -25,7 +25,7 @@ There are two options for deploying Panel apps: Binder & Heroku.
 - a reasonable amount of free storage provided, e.g., enough to host the dataset of 1 million taxi trips
 
 To generate custom links for your Binder apps that say `launch app` and `launch notebook` using
-[this page](https://mybinder.readthedocs.io/en/latest/howto/badges.html)
+this page: https://mybinder.readthedocs.io/en/latest/howto/badges.html.
 
 You can create the link for your app from the Binder homepage: https://mybinder.org/
 
@@ -34,14 +34,16 @@ You'll want to create two links:
 #### The `app.ipynb` notebook:
 
 - Enter your repository URL
-- Specify the **file path** as `app.ipynb`
+- Specify the **file path** as `app.ipynb` (or whatever you app notebook is called!)
 
 ![binder app link](./imgs/binder_nb_link.png)
 
 #### The URL for the app itself:
 
 - Enter your repository URL
-- Specify the **URL path** as `/proxy/5006/app`
+- Specify the **URL path** as `/panel/app`
+
+Note: if you named your file name `app-name.ipynb`, you should instead use: `/panel/app-name`
 
 ![binder app link](./imgs/binder_app_link.png)
 
