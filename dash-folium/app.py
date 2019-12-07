@@ -115,11 +115,11 @@ def render(days):
     gdf = get_data(days)
 
     # make and return our map
-    map = get_folium_map(gdf, days)
+    map_html = get_folium_map(gdf, days)
 
     text = f"Days = {days}"
 
-    return map, text
+    return map_html, text
 
 
 if __name__ == "__main__":

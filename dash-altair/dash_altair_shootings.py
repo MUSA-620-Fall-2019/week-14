@@ -3,13 +3,14 @@ import dash_core_components as dcc
 import dash_html_components as html
 import altair as alt
 import io
-import carto2gpd
 import geopandas as gpd
 import altair as alt
+import carto2gpd
 
 # initialize the app
 external_stylesheets = ["https://codepen.io/chriddyp/pen/bWLwgP.css"]
 app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
+
 
 # set a title
 app.title = "Dash: Philadelphia Shootings"
@@ -92,7 +93,7 @@ def make_altair_chart(data, days):
         .properties(
             width=400,
             height=800,
-            title=f"Shootings in the Last {days} Days by Neighborhood",
+            title="Shootings in the Last %d Days by Neighborhood" % days,
         )
     )
 
@@ -138,11 +139,32 @@ app.layout = html.Div(
         #  this Div holds the slider
         html.Div(
             [
-                html.P(id="title", children=""),
-                html.P(
+                # P ELEMENT FOR TITLE
+                html.P(id="subtitle", children=""),
+                # DIV ELEMENT FOR DAYS SLIDER
+                html.Div(
                     [
                         html.Label("Select the number of days to query"),
-                        dcc.Slider(id="days", min=30, max=365, value=90),
+                        dcc.Slider(id="daysSlider", min=30, max=365, value=90),
+                    ],
+                    style={
+                        "width": "250px",
+                        "margin-right": "auto",
+                        "margin-left": "auto",
+                        "text-align": "center",
+                    },
+                ),
+                # NEW: DIV ELEMENT FOR RACE DROPDOWN
+                html.Div(
+                    [
+                        html.Label("Race"),
+                        dcc.Dropdown(
+                            id="raceDropdown",
+                            options=[
+                                {"label": i, "value": i} for i in ["W", "B", "A", "I"]
+                            ],
+                            value="W",
+                        ),
                     ],
                     style={
                         "width": "250px",
@@ -152,9 +174,8 @@ app.layout = html.Div(
                     },
                 ),
             ],
-            style={"display": "flex", "justify-content": "center"},
         ),
-        # this Div holds the chart
+        # CHART IFRAME
         html.Div(
             [
                 html.Iframe(
@@ -163,7 +184,6 @@ app.layout = html.Div(
                     width="1100",
                     sandbox="allow-scripts",
                     style={"border-width": "0px", "align": "center"},
-                    srcDoc=None,
                 )
             ],
             style={"display": "flex", "justify-content": "center"},
@@ -175,20 +195,26 @@ app.layout = html.Div(
 @app.callback(
     [
         dash.dependencies.Output("chart", "srcDoc"),
-        dash.dependencies.Output("title", "children"),
+        dash.dependencies.Output("subtitle", "children"),
     ],
-    [dash.dependencies.Input("days", "value")],
+    [
+        dash.dependencies.Input("daysSlider", "value"),
+        dash.dependencies.Input("raceDropdown", "value"),  # NEW: Input for race dropdown
+    ],
 )
-def render(days):
+def render(days, race):
 
     # query the CARTO database
     gdf = get_data(days)
+ 
+    # NEW: select data for selected race
+    gdf = gdf.loc[gdf["race"] == race]
 
     # count shootings and homicides
     shootings = len(gdf)
     homicides = (gdf.fatal == "Yes").sum()
     args = (shootings, homicides, days)
-    title = f"There have been {shootings} shootings and {homicides} homicides in the last {days} days."
+    subtitle = "There have been %d shootings and %d homicides in the last %d days." % args
 
     # do a spatial join with ZIP codes
     hoods.crs = gdf.crs
@@ -204,7 +230,7 @@ def render(days):
     chart.save(html, "html")
 
     # Return the html from StringIO object
-    return html.getvalue(), title
+    return html.getvalue(), subtitle
 
 
 if __name__ == "__main__":
